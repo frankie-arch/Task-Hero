@@ -1,0 +1,105 @@
+{% extends 'partials/base.html' %}
+
+{% block title %}TaskHero | Home{% endblock %}
+
+{% block content %}
+
+<!-- HERO CONTENT -->
+<div class="text-center mb-5">
+    <h1 class="display-4 fw-bold">
+        Take Control of Your Tasks Like a Pro ⚡
+    </h1>
+    <p class="lead text-light mt-3">
+        TaskHero helps you organize, track, and complete your daily tasks with ease.
+        Stay productive, stay focused, and never miss a deadline again.
+    </p>
+    <div class="mt-4">
+    {% if request.user.is_authorized %}
+        
+    {% else %}
+        <a href="{% url 'user:signup' %}" class="btn btn-glow btn-lg me-2">
+            Get Started Free
+        </a>
+        <a href="{% url 'user:login' %}" class="btn btn-outline-light btn-lg">
+            Login
+        </a>
+
+    {% endif %}
+    </div>
+</div>
+
+<!-- FEATURES -->
+<div class="row g-4 mt-4">
+
+    <div class="col-md-4 fade-in">
+        <div class="glass-card h-100 text-center">
+            <h4>📝 Smart Task Management</h4>
+            <p class="text-light">
+                Easily create, edit, and organize your tasks in a clean and intuitive interface.
+            </p>
+        </div>
+    </div>
+
+    <div class="col-md-4 fade-in">
+        <div class="glass-card h-100 text-center">
+            <h4>⏰ Stay on Track</h4>
+            <p class="text-light">
+                Set deadlines and priorities to ensure you never miss important work.
+            </p>
+        </div>
+    </div>
+
+    <div class="col-md-4 fade-in">
+        <div class="glass-card h-100 text-center">
+            <h4>🚀 Boost Productivity</h4>
+            <p class="text-light">
+                Focus on what matters most and get more done in less time with TaskHero.
+            </p>
+        </div>
+    </div>
+
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="mt-5 text-center">
+    <h2 class="fw-bold mb-4">How It Works</h2>
+
+    <div class="row g-4">
+        <div class="col-md-4 fade-in">
+            <div class="glass-card">
+                <h5>1. Sign Up</h5>
+                <p>Create your free account in seconds.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4 fade-in">
+            <div class="glass-card">
+                <h5>2. Add Tasks</h5>
+                <p>Quickly add and organize your daily tasks.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4 fade-in">
+            <div class="glass-card">
+                <h5>3. Stay Productive</h5>
+                <p>Track progress and complete tasks efficiently.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CALL TO ACTION -->
+<div class="text-center mt-5">
+    <div class="glass-card fade-in">
+        <h2 class="fw-bold">Ready to Level Up Your Productivity?</h2>
+        <p class="text-light mt-3">
+            Join TaskHero today and start managing your tasks smarter, not harder.
+        </p>
+
+        <a href="{% url 'user:signup' %}" class="btn btn-glow btn-lg mt-3">
+            Join Now — It's Free 🚀
+        </a>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,114 @@
+{% extends 'partials/base.html' %}
+{% block title %}Create Task • TaskFlow{% endblock %}
+
+{% block content %}
+
+<style>
+    /* Improve readability against your dark + gradient base */
+    .form-wrapper {
+        max-width: 650px;
+        margin: 0 auto;
+    }
+
+    label {
+        color: #e5e5e5 !important;
+        font-weight: 500;
+    }
+
+    .form-control, .form-select {
+        background: rgba(255, 255, 255, 0.07) !important;
+        border: 1px solid rgba(255,255,255,0.1) !important;
+        color: #fff !important;
+        border-radius: 10px;
+    }
+
+    .form-control::placeholder {
+        color: rgba(255,255,255,0.5);
+    }
+
+    .form-control:focus, .form-select:focus {
+        box-shadow: 0 0 12px rgba(106,92,255,0.5);
+        border-color: rgba(106,92,255,0.6) !important;
+    }
+
+    .error-box {
+        background: rgba(255, 80, 120, 0.15);
+        border-left: 4px solid #ff4ecd;
+        padding: 12px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        color: #fff;
+    }
+
+    .page-title {
+        font-weight: 700;
+        font-size: 2rem;
+    }
+
+    .sub-text {
+        color: rgba(255,255,255,0.65);
+        margin-bottom: 25px;
+    }
+</style>
+
+<div class="form-wrapper">
+
+```
+<!-- HEADER -->
+<div class="text-center mb-4">
+    <div class="page-title">Create New Task</div>
+    <div class="sub-text">Organize your work and stay productive</div>
+</div>
+
+<!-- ERRORS -->
+{% if form.errors %}
+<div class="error-box">
+    {% for field in form %}
+        {% for error in field.errors %}
+            <div>{{ error }}</div>
+        {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+        <div>{{ error }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- FORM -->
+<form method="POST">
+    {% csrf_token %}
+
+    <div class="mb-3">
+        <label>Title</label>
+        {{ form.title }}
+    </div>
+
+    <div class="mb-3">
+        <label>Description</label>
+        {{ form.description }}
+    </div>
+
+    <div class="mb-3">
+        <label>Due Date</label>
+        {{ form.due_date.as_widget }}
+    </div>
+
+    <div class="mb-3">
+        <label>Status</label>
+        {{ form.status }}
+    </div>
+
+    <div class="mb-4">
+        <label>Priority</label>
+        {{ form.priority }}
+    </div>
+
+    <button type="submit" class="btn btn-glow w-100">
+        Create Task
+    </button>
+</form>
+```
+
+</div>
+
+{% endblock %}
