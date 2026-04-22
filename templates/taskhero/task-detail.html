@@ -1,0 +1,192 @@
+{% extends 'partials/base.html' %}
+{% block title %}Task Detail • TaskFlow{% endblock %}
+
+{% block content %}
+
+<style>
+    .detail-card {
+        max-width: 700px;
+        margin: 0 auto;
+        background: rgba(10, 10, 30, 0.85);
+        padding: 25px;
+        border-radius: 15px;
+    }
+
+    .task-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #fff;
+    }
+
+    .task-desc {
+        margin-top: 15px;
+        color: rgba(255,255,255,0.85);
+        line-height: 1.6;
+    }
+
+    .task-meta {
+        margin-top: 20px;
+        color: rgba(255,255,255,0.75);
+        font-size: 0.95rem;
+    }
+
+    .label {
+        font-weight: 600;
+        color: #ddd;
+    }
+
+    .badge {
+        font-size: 0.8rem;
+        margin-left: 5px;
+    }
+
+    .action-buttons {
+        margin-top: 25px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+</style>
+<div class="mb-3">
+    <a href="{% url 'taskhero:dashboard' %}" class="btn btn-outline-light btn-sm">
+        ← Back to Dashboard
+    </a>
+</div>
+<div class="detail-card">
+
+```
+<!-- TITLE -->
+<div class="task-title">
+    {{ task.title }}
+</div>
+
+<!-- DESCRIPTION -->
+<div class="task-desc">
+    {{ task.description }}
+</div>
+
+<!-- META INFO -->
+<div class="task-meta">
+
+    <div>
+        <span class="label">Due Date:</span>
+        {{ task.due_date }}
+    </div>
+
+    <div class="mt-2">
+        <span class="label">Status:</span>
+        <span class="
+            badge
+            {% if task.status == 'td' %}bg-secondary
+            {% elif task.status == 'ip' %}bg-info text-dark
+            {% elif task.status == 'cmp' %}bg-success
+            {% endif %}
+        ">
+            {{ task.get_status_display }}
+        </span>
+    </div>
+
+    <div class="mt-2">
+        <span class="label">Priority:</span>
+        <span class="
+            badge
+            {% if task.priority == 'high' %}bg-danger
+            {% elif task.priority == 'mid' %}bg-warning text-dark
+            {% else %}bg-success
+            {% endif %}
+        ">
+            {{ task.get_priority_display }}
+        </span>
+    </div>
+
+</div>
+
+<!-- ACTION BUTTONS -->
+<div class="action-buttons">
+
+    <!-- EDIT -->
+    <a href="{% url 'taskhero:update_task' task.pk %}" class="btn btn-outline-light">
+        Edit
+    </a>
+
+    <!-- DELETE -->
+   <button class="btn btn-danger" onclick="openDeleteModal()">
+    Delete
+    </button>
+
+    <!-- MARK AS COMPLETED -->
+    
+    {% if task.status != 'cmp' %}
+    {% comment %} <form method="POST" action="{% url 'taskhero:update_task' task.pk %}">
+        {% csrf_token %}
+        <input type="hidden" name="status" value="cmp">
+        <button type="submit" class="btn btn-success">
+            Mark as Completed
+        </button>
+    </form> {% endcomment %}
+    <a href="{% url 'taskhero:mark_completed' task.pk %}" class="btn btn-success">
+    Mark as Completed
+    </a>
+    {% endif %}
+
+</div>
+```
+
+</div>
+
+<div id="deleteModal" style="
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background: rgba(0,0,0,0.7);
+    z-index:1000;
+    align-items:center;
+    justify-content:center;
+">
+
+    <div style="
+        background: rgba(20,20,40,0.95);
+        padding: 25px;
+        border-radius: 15px;
+        width: 90%;
+        max-width: 400px;
+        text-align:center;
+        color:#fff;
+    ">
+        <h5>Delete Task?</h5>
+        <p style="color: rgba(255,255,255,0.7);">
+            This action cannot be undone.
+        </p>
+
+        <div class="d-flex justify-content-center gap-2 mt-3">
+
+            <!-- CANCEL -->
+            <button class="btn btn-outline-light" onclick="closeDeleteModal()">
+                Cancel
+            </button>
+
+            <!-- CONFIRM DELETE -->
+            <form method="POST" action="{% url 'taskhero:delete' task.pk %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">
+                    Yes, Delete
+                </button>
+            </form>
+
+        </div>
+    </div>
+
+</div>
+<script>
+function openDeleteModal() {
+    document.getElementById('deleteModal').style.display = 'flex';
+}
+
+function closeDeleteModal() {
+    document.getElementById('deleteModal').style.display = 'none';
+}
+</script>
+{% endblock %}

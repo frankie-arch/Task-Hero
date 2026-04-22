@@ -4,83 +4,207 @@
 {% block content %}
 
 <style>
-    .task-card {
-        background: rgba(255,255,255,0.06);
+    .kanban-column {
+        background: rgba(0, 0, 0, 0.35); /* darker for contrast */
         border-radius: 15px;
-        padding: 20px;
-        transition: 0.3s;
-        position: relative;
-        overflow: hidden;
+        padding: 15px;
+        min-height: 400px;
+    }
+
+    .kanban-title {
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+        color: #ffffff;
+        letter-spacing: 0.5px;
+    }
+
+    .task-card {
+        background: rgba(20, 20, 40, 0.85); /* stronger background */
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 12px;
+        transition: 0.25s;
+        cursor: pointer;
     }
 
     .task-card:hover {
-        transform: translateY(-5px) scale(1.02);
-        box-shadow: 0 0 20px rgba(255, 78, 205, 0.3);
+        transform: translateY(-3px);
+        box-shadow: 0 0 15px rgba(255, 78, 205, 0.4);
     }
 
     .task-title {
-        font-weight: 600;
-        font-size: 1.2rem;
+        font-weight: 700;
+        font-size: 1.05rem;
+        color: #ffffff;
+    }
+
+    .task-desc {
+        font-size: 0.9rem;
+        color: rgba(255,255,255,0.75);
+        margin-top: 6px;
+        line-height: 1.4;
     }
 
     .task-meta {
-        font-size: 0.85rem;
-        color: #aaa;
+        font-size: 0.8rem;
+        color: rgba(255,255,255,0.6);
+        margin-top: 8px;
     }
 
-    .empty-state {
-        text-align: center;
-        padding: 40px;
-        color: #aaa;
-    }
-
-    .floating-add {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        border-radius: 50%;
-        width: 60px;
-        height: 60px;
-        font-size: 24px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    .badge {
+        font-size: 0.75rem;
+        font-weight: 500;
     }
 </style>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Your Tasks</h2>
-    {% comment %} <a href="{% url 'taskhero:create_task' task_pk %}" class="btn btn-glow">+ New Task</a> {% endcomment %}
+    <a href="{% url 'taskhero:create_task' %}" class="btn btn-glow">+ New Task</a>
 </div>
-
-{% if tasks %}
 
 <div class="row g-3">
-    {% for task in tasks %}
-    <div class="col-md-6 col-lg-4">
-        <div class="task-card fade-in">
-            <div class="task-title">{{ task.title }}</div>
-            <div class="task-meta mt-2">
-                Created: {{ task.created_at|date:"M d, Y" }}
-            </div>
 
 ```
-        <div class="mt-3">
-            <a href="{% url 'taskhero:task_detail' task.pk %}" class="btn btn-sm btn-outline-light">View</a>
-        </div>
+<!-- TO DO COLUMN -->
+<div class="col-md-4">
+    <div class="kanban-column">
+        <div class="kanban-title">To Do</div>
+
+        {% for task in tasks %}
+            {% if task.status == 'td' %}
+            <div class="task-card" onclick="window.location.href='{% url 'taskhero:task_detail' task.pk %}'">
+
+                <div class="task-title">{{ task.title }}</div>
+
+                <div class="task-desc">
+                    {{ task.description|truncatewords:10 }}
+                </div>
+
+                <div class="task-meta">
+                    Due: {{ task.due_date }}
+                </div>
+
+                <div class="mt-2">
+                    <span class="badge bg-secondary">
+                        {{ task.get_status_display }}
+                    </span>
+
+                    <span class="
+                        badge
+                        {% if task.priority == 'high' %}bg-danger
+                        {% elif task.priority == 'mid' %}bg-warning text-dark
+                        {% else %}bg-success
+                        {% endif %}
+                    ">
+                        {{ task.get_priority_display }}
+                    </span>
+                </div>
+
+            </div>
+            {% endif %}
+        {% empty %}
+            <p class="text-secondary">No tasks</p>
+        {% endfor %}
     </div>
 </div>
-{% endfor %}
+
+<!-- IN PROGRESS COLUMN -->
+<div class="col-md-4">
+    <div class="kanban-column">
+        <div class="kanban-title text-info">In Progress</div>
+
+        {% for task in tasks %}
+            {% if task.status == 'ip' %}
+            <div class="task-card" onclick="window.location.href='{% url 'taskhero:task_detail' task.pk %}'">
+
+                <div class="task-title">{{ task.title }}</div>
+
+                <div class="task-desc">
+                    {{ task.description|truncatewords:10 }}
+                </div>
+
+                <div class="task-meta">
+                    Due: {{ task.due_date }}
+                </div>
+
+                <div class="mt-2">
+                    <span class="badge bg-info text-dark">
+                        {{ task.get_status_display }}
+                    </span>
+
+                    <span class="
+                        badge
+                        {% if task.priority == 'high' %}bg-danger
+                        {% elif task.priority == 'mid' %}bg-warning text-dark
+                        {% else %}bg-success
+                        {% endif %}
+                    ">
+                        {{ task.get_priority_display }}
+                    </span>
+                </div>
+
+            </div>
+            {% endif %}
+        {% empty %}
+            <p class="text-secondary">No tasks</p>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- COMPLETED COLUMN -->
+<div class="col-md-4">
+    <div class="kanban-column">
+        <div class="kanban-title text-success">Completed</div>
+
+        {% for task in tasks %}
+            {% if task.status == 'cmp' %}
+            <div class="task-card" onclick="window.location.href='{% url 'taskhero:task_detail' task.pk %}'">
+
+                <div class="task-title">{{ task.title }}</div>
+
+                <div class="task-desc">
+                    {{ task.description|truncatewords:10 }}
+                </div>
+
+                <div class="task-meta">
+                    Due: {{ task.due_date }}
+                </div>
+
+                <div class="mt-2">
+                    <span class="badge bg-success">
+                        {{ task.get_status_display }}
+                    </span>
+
+                    <span class="
+                        badge
+                        {% if task.priority == 'high' %}bg-danger
+                        {% elif task.priority == 'mid' %}bg-warning text-dark
+                        {% else %}bg-success
+                        {% endif %}
+                    ">
+                        {{ task.get_priority_display }}
+                    </span>
+                </div>
+
+            </div>
+            {% endif %}
+        {% empty %}
+            <p class="text-secondary">No tasks</p>
+        {% endfor %}
+    </div>
+</div>
+{% if not tasks %}
+<div class="text-center mt-5">
+    <h4>No tasks yet 🚀</h4>
+    <p class="text-secondary">Start by creating your first task</p>
+    <a href="{% url 'taskhero:create_task' %}" class="btn btn-glow mt-3">
+        Create Your First Task
+    </a>
+</div>
+{% endif %}
 ```
 
 </div>
-{% else %}
-<div class="empty-state">
-    <h4>No tasks yet 💤</h4>
-    <p>Click "New Task" to get started</p>
-</div>
-<a href="{% url 'taskhero:create_task'%}" class="btn btn-glow floating-add">+</a>
-{% endif %}
-
 
 {% endblock %}

@@ -1,0 +1,85 @@
+{% extends 'partials/base.html' %}
+{% block title %}Update Task • TaskFlow{% endblock %}
+
+{% block content %}
+
+<style>
+    .form-wrapper {
+        max-width: 650px;
+        margin: 0 auto;
+        background: rgba(10,10,30,0.85);
+        padding: 25px;
+        border-radius: 15px;
+    }
+
+    label {
+        color: #ddd;
+        font-weight: 500;
+    }
+
+    .form-control, .form-select {
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.1);
+        color: #fff;
+        border-radius: 10px;
+    }
+
+    .form-control:focus, .form-select:focus {
+        box-shadow: 0 0 10px rgba(106,92,255,0.6);
+    }
+</style>
+
+<div class="form-wrapper">
+
+```
+<h3 class="text-center mb-3">Update Task</h3>
+
+{% if form.errors %}
+<div class="alert alert-danger">
+    {{ form.errors }}
+</div>
+{% endif %}
+
+<form method="POST">
+    {% csrf_token %}
+
+    <div class="mb-3">
+        <label>Title</label>
+        {{ form.title }}
+    </div>
+
+    <div class="mb-3">
+        <label>Description</label>
+        {{ form.description }}
+    </div>
+
+    <div class="mb-3">
+        <label>Due Date</label>
+        {{ form.due_date }}
+    </div>
+
+    <div class="mb-3">
+        <label>Status</label>
+        {{ form.status }}
+    </div>
+
+    <div class="mb-4">
+        <label>Priority</label>
+        {{ form.priority }}
+    </div>
+
+    <button type="submit" class="btn btn-glow w-100">
+        Save Changes
+    </button>
+</form>
+
+<div class="text-center mt-3">
+    <a href="{% url 'taskhero:task_detail' task.pk %}" class="text-secondary">
+        ← Back to Task
+    </a>
+</div>
+```
+
+</div>
+
+{% endblock %}

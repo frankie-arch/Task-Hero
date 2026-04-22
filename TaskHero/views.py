@@ -18,13 +18,13 @@ def create_task(request):
             task = form.save(commit=False)
             task.added_by = request.user
             task.save()
-            return redirect('taskhero:task_detail', request.user)
+            return redirect('taskhero:dashboard')
         
     return render(request, 'taskhero/create-task.html', {'form': form})
 
 @login_required
 def task_detail(request, task_pk):
-    task = get_object_or_404(Task, pk = task_pk, user=request.user)
+    task = get_object_or_404(Task, pk = task_pk, added_by=request.user)
     return render(request, 'taskhero/task-detail.html', {'task': task})
 
 
@@ -32,3 +32,38 @@ def task_detail(request, task_pk):
 def dashboard(request):
     tasks = Task.objects.filter(added_by=request.user)
     return render(request, 'taskhero/dashboard.html', {'tasks': tasks})
+
+@login_required
+def update_task(request, task_pk):
+    task = get_object_or_404(Task, pk=task_pk, added_by=request.user)
+    form = TaskForm(instance=task)
+    if request.method == 'POST':
+        form = TaskForm(request.POST, instance=task)
+        if form.is_valid():
+            form.save()
+            return redirect('taskhero:task_detail', task_pk=task.pk)
+    
+    context = {
+        'task': task,
+        'form': form
+    }
+    return render(request, 'taskhero/update.html', context)
+        
+@login_required
+def confirm_delete(request, task_pk):
+    task = get_object_or_404(Task, pk=task_pk, added_by=request.user)
+    return render (request, 'taskhero/confirm-delete.html', {'task': task})
+
+@login_required
+def delete(request, task_pk):
+    task = get_object_or_404(Task, pk=task_pk, added_by=request.user)
+    if request.method == 'POST':
+        task.delete()
+    return redirect('taskhero:dashboard')
+
+@login_required
+def mark_completed(request, task_pk):
+    task = get_object_or_404(Task, pk=task_pk, added_by=request.user)
+    task.status = 'cmp'
+    task.save()
+    return redirect('taskhero:task_detail', task_pk=task.pk)
