@@ -132,12 +132,19 @@
             <ul class="navbar-nav me-auto">
                 <li class="nav-item"><a class="nav-link" href="{% url 'taskhero:home'%}">Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'taskhero:dashboard'%}">Dashboard</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Pricing</a></li>
+                {% comment %} <li class="nav-item"><a class="nav-link" href="#">Pricing</a></li> {% endcomment %}
             </ul>
 
             <div class="d-flex gap-2">
+            {% if request.user.is_authenticated %}
+                <form action="{% url 'user:logout' %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit">Log out</button>
+                </form>
+            {% else %}
                 <a href="{% url 'user:login' %}" class="btn btn-outline-light">Login</a>
                 <a href="{% url 'user:signup' %}" class="btn btn-glow">Get Started</a>
+            {% endif %} 
             </div>
         </div>
     </div>
@@ -148,7 +155,15 @@
 <div class="hero fade-in">
     <h1>The Go-To Hub<br>for All Your To-Dos</h1>
     <p>Your essential tool for managing tasks and boosting productivity.</p>
+    {% if request.user.is_authenticated %}
+                {% comment %} <form action="{% url 'user:logout' %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit">Log out</button>
+                </form> {% endcomment %}
+        <h3>Welcome {{ request.user }}</h3>
+    {% else %}
     <a href="{% url 'user:signup' %}" class="btn btn-glow mt-3">Start now — it's free</a>
+    {% endif %} 
 </div>
 {% endif %}
 

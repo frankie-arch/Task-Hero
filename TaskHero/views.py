@@ -17,6 +17,8 @@ def create_task(request):
         if form.is_valid():
             task = form.save(commit=False)
             task.added_by = request.user
+            messages.success(request, "Task created successfully!")
+            messages.error(request, "Please correct the errors below.")
             task.save()
             return redirect('taskhero:dashboard')
         

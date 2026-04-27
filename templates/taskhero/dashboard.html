@@ -67,7 +67,7 @@
 
 ```
 <!-- TO DO COLUMN -->
-<div class="col-md-4">
+<div class="card mb-3 {% if task.is_overdue %}bg-light border-danger{% endif %}">
     <div class="kanban-column">
         <div class="kanban-title">To Do</div>
 
@@ -110,7 +110,7 @@
 </div>
 
 <!-- IN PROGRESS COLUMN -->
-<div class="col-md-4">
+<div class="card mb-3 {% if task.is_overdue %}bg-light border-danger{% endif %}">
     <div class="kanban-column">
         <div class="kanban-title text-info">In Progress</div>
 

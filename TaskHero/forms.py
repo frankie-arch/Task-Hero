@@ -1,5 +1,7 @@
 from django import forms
 from .models import Task
+from django.core.exceptions import ValidationError
+from datetime import date
 
 class TaskForm(forms.ModelForm):
     class Meta:
@@ -11,6 +13,12 @@ class TaskForm(forms.ModelForm):
                 'class': 'form-control'
             }),
         }
-        def form_valid(self, form):
-            form.instance.user = self.request.user
-            return super().form_valid(form)
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            for field in self.fields.values():
+                field.widget.attrs.update({'class': 'form-control'})
+        def clean_due_date(self):
+            due_date = self.cleaned_data.get('due_date')
+            if due_date and due_date < date.today():
+                raise ValidationError("Due date cannot be in the past.")
+            return due_date

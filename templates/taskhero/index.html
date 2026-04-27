@@ -14,8 +14,12 @@
         Stay productive, stay focused, and never miss a deadline again.
     </p>
     <div class="mt-4">
-    {% if request.user.is_authorized %}
-        
+    
+    {% if request.user.is_authenticated %}
+        {% comment %} <form action="{% url 'user:logout' %}" method="POST">
+            {% csrf_token %}
+            <button type="submit">Log out</button>
+        </form> {% endcomment %}
     {% else %}
         <a href="{% url 'user:signup' %}" class="btn btn-glow btn-lg me-2">
             Get Started Free
@@ -23,8 +27,8 @@
         <a href="{% url 'user:login' %}" class="btn btn-outline-light btn-lg">
             Login
         </a>
-
-    {% endif %}
+            
+    {% endif %} 
     </div>
 </div>
 
@@ -91,14 +95,20 @@
 <!-- CALL TO ACTION -->
 <div class="text-center mt-5">
     <div class="glass-card fade-in">
+        {% if request.user.is_authenticated %}
+                {% comment %} <form action="{% url 'user:logout' %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit">Log out</button>
+                </form> {% endcomment %}
+            {% else %}
         <h2 class="fw-bold">Ready to Level Up Your Productivity?</h2>
         <p class="text-light mt-3">
             Join TaskHero today and start managing your tasks smarter, not harder.
         </p>
-
         <a href="{% url 'user:signup' %}" class="btn btn-glow btn-lg mt-3">
             Join Now — It's Free 🚀
         </a>
+            {% endif %} 
     </div>
 </div>
 
